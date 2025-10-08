@@ -64,7 +64,7 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
         to=User,
-        related_name="users",
+        related_name="orders",
         on_delete=models.DO_NOTHING)
 
     class Meta:
@@ -78,12 +78,12 @@ class Ticket(models.Model):
     movie_session = models.ForeignKey(
         MovieSession,
         on_delete=models.DO_NOTHING,
-        related_name="movie_sessions"
+        related_name="tickets"
     )
     order = models.ForeignKey(
         Order,
         on_delete=models.DO_NOTHING,
-        related_name="orders")
+        related_name="tickets")
     row = models.IntegerField()
     seat = models.IntegerField()
 

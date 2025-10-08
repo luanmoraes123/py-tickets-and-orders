@@ -1,4 +1,5 @@
-from db.models import User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
 
 
 def create_user(
@@ -6,23 +7,19 @@ def create_user(
         password: str,
         email: str | None = "",
         first_name: str | None = "",
-        last_name: str | None = "") -> User:
-    user = User(
+        last_name: str | None = "") -> AbstractUser:
+    user = get_user_model().objects.create_user(
         username=username,
+        password=password,
         first_name=first_name,
         email=email,
-        last_name=last_name)
-    user.set_password(password)
-    user.save()
+        last_name=last_name
+    )
     return user
 
 
-def get_user(user_id: int) -> User:
-    return User.objects.get(id=user_id)
-
-
-def get_user_model() -> type[User]:
-    return User
+def get_user(user_id: int) -> AbstractUser:
+    return get_user_model().objects.get(id=user_id)
 
 
 def update_user(

@@ -50,7 +50,8 @@ def delete_movie_session_by_id(session_id: int) -> None:
 
 
 def get_taken_seats(movie_session_id: int) -> list[dict]:
-    session = (MovieSession.
-               objects.
-               prefetch_related("movie_sessions").get(id=movie_session_id))
-    return list(session.movie_sessions.values("row", "seat"))
+    return list(
+        MovieSession.
+        objects.
+        prefetch_related("tickets").get(id=movie_session_id).
+        tickets.values("row", "seat"))
