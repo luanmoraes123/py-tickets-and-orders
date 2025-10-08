@@ -6,7 +6,7 @@ def create_user(
         password: str,
         email: str | None = "",
         first_name: str | None = "",
-        last_name: str | None = "") -> None:
+        last_name: str | None = "") -> User:
     user = User(
         username=username,
         first_name=first_name,
@@ -14,10 +14,15 @@ def create_user(
         last_name=last_name)
     user.set_password(password)
     user.save()
+    return user
 
 
 def get_user(user_id: int) -> User:
     return User.objects.get(id=user_id)
+
+
+def get_user_model() -> type[User]:
+    return User
 
 
 def update_user(

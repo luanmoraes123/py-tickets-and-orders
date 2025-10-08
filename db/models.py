@@ -1,5 +1,4 @@
 from django.db import models
-from datetime import datetime
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 
@@ -62,8 +61,11 @@ class User(AbstractUser):
 
 
 class Order(models.Model):
-    created_at = models.DateTimeField(default=datetime.now)
-    user = models.ForeignKey(to=User, on_delete=models.DO_NOTHING)
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        to=User,
+        related_name="users",
+        on_delete=models.DO_NOTHING)
 
     class Meta:
         ordering = ["-created_at"]
@@ -74,9 +76,14 @@ class Order(models.Model):
 
 class Ticket(models.Model):
     movie_session = models.ForeignKey(
-        MovieSession, on_delete=models.DO_NOTHING, related_name="tickets"
+        MovieSession,
+        on_delete=models.DO_NOTHING,
+        related_name="movie_sessions"
     )
-    order = models.ForeignKey(Order, on_delete=models.DO_NOTHING)
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.DO_NOTHING,
+        related_name="orders")
     row = models.IntegerField()
     seat = models.IntegerField()
 

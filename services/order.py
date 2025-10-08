@@ -1,6 +1,8 @@
-from db.models import Order, User, MovieSession, Ticket
+from django.db.models import QuerySet
+from db.models import Order, MovieSession, Ticket
 from datetime import datetime
 from django.db import transaction
+from services import user
 
 
 @transaction.atomic
@@ -11,12 +13,12 @@ def create_order(
     if not tickets:
         return None
 
-    user = User.objects.get(username=username)
+    current_user = user.get_user_model().objects.get(username=username)
 
+    order = Order.objects.create(user=current_user)
     if date:
-        order = Order.objects.create(user=user, created_at=date)
-    else:
-        order = Order.objects.create(user=user)
+        order.created_at = date
+        order.save()
     for ticket_data in tickets:
         ticket = Ticket(
             order=order,
@@ -30,7 +32,7 @@ def create_order(
         ticket.save()
 
 
-def get_orders(username: str | None = None) -> list[Order]:
+def get_orders(username: str | None = None) -> QuerySet[Order]:
     if username:
         return Order.objects.filter(user__username=username)
     return Order.objects.all()
